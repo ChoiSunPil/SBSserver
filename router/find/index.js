@@ -64,11 +64,15 @@ if(err)
 {
 console.log(err)
   res.json("{'status':'error'}");
+  //콜백으로 동작
+  auth.rmAuth(user_email);
   return;
 }
 if(rows.length>0 &&(rows[0].email == user_email))
 {
 res.json("{'status':'ok'}");
+//콜백으로 동작
+auth.rmAuth(user_email);
 return;
 }
 res.json("{'status':'error'}");
@@ -85,6 +89,8 @@ if(err)throw err;
 if(rows.length>0){
 if(user_auth == rows[rows.length-1].auth_num)
 {
+  //콜백으로 동작
+  auth.rmAuth(user_email);
 req.json("{ 'status' : 'ok'}")
 }
 else

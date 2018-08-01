@@ -25,8 +25,7 @@ var connection = mysql.createConnection({
   password : 'Choi6459@@',
   database : 'seouldb'
 })
-var rmAuth = function (user_email){
-    sleep.sleep(180);
+router.rmAuth = function (user_email){
     var deleQuery = connection.query('delete  from find_pw where email=?',[user_email],function(err,rows){
       if(err){
 		console.log(err);
@@ -53,8 +52,6 @@ transporter.sendMail(mailOption, function(err, info) {
   }
   else {
       console.log('Message sent : ', info);
-      //콜백으로 동작
-      rmAuth(user_email);
   }
 });
 //해당 이메일 있는지

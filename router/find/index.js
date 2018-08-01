@@ -47,10 +47,10 @@ transporter.sendMail(mailOption, function(err, info) {
         console.log('Message sent : ', info);
     }
 });
-res.json("{'status':'ok'}");
+res.json('{"status":"ok"}');
 }
 else {
-  res.json("{'status':'error'}");
+  res.json('{"status":"error"}');
 }
 })
 
@@ -63,19 +63,19 @@ var findQurey = connection.query('select * from user where id =?',[user_id],func
 if(err)
 {
 console.log(err)
-  res.json("{'status':'error'}");
+res.json('{"status":"error"}');
   //콜백으로 동작
   auth.rmAuth(user_email);
   return;
 }
 if(rows.length>0 &&(rows[0].email == user_email))
 {
-res.json("{'status':'ok'}");
+res.json('{"status":"ok"}');
 //콜백으로 동작
 auth.rmAuth(user_email);
 return;
 }
-res.json("{'status':'error'}");
+res.json('{"status":"error"}');
 })
 })
 
@@ -91,11 +91,11 @@ if(user_auth == rows[rows.length-1].auth_num)
 {
   //콜백으로 동작
   auth.rmAuth(user_email);
-req.json("{ 'status' : 'ok'}")
+res.json('{"status":"ok"}');
 }
 else
 {
-req.json("{ 'status' : 'error'}")
+res.json('{"status":"error"}');
 }
 }
 })
@@ -108,10 +108,10 @@ var resetQuery = connection.query('update user set pw =? where id =?',[user_pw,u
 if(err)
 {
   console.log(err)
-  req.json("{ 'status' : 'error'}")
+  res.json('{"status":"error"}');
 }
 else {
-  req.json("{ 'status' : 'error'}")
+  res.json('{"status":"error"}');
 }
 
 })

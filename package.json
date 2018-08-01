@@ -25,7 +25,6 @@
     "pbkdf2-password": "^1.2.1",
     "random-number": "0.0.9",
     "sleep": "^5.1.1",
-    "slepp": "^1.0.0",
     "store": "^2.0.12"
   }
 }

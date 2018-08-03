@@ -72,10 +72,10 @@ console.log("insert")
 console.log(user_email+"  "+auth_number)
 
 })
-res.json('{"status":"ok"}');
+res.json({"status":"ok"});
 }
 else {
-  res.json('{"status":"error"}');
+  res.json({"status":"error"});
 }
 })
 })

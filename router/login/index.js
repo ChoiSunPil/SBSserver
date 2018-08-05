@@ -24,7 +24,7 @@ var searchQuery = connection.query('select * from user where ID = ?',[id],functi
   if(err)throw err
   if(rows.length < 1)
   {
-    var msg = {'status': 'ID_ERROR'}
+    var msg = {"status": "ID_ERROR"}
     res.json(msg)
     return;
   }
@@ -39,18 +39,21 @@ var searchQuery = connection.query('select * from user where ID = ?',[id],functi
      //var token = tokenHelper.tokenGenerator();
      var name = rows[0].name;
      var type = rows[0].type;
-     var respone = {'status':'OK','token':token,'name':name,'type':type}
+     var respone = {'status':'ok','token':token,'name':name,'type':type}
      res.json(respone);
     return;
     }
     else {
-      var msg = {'status': 'PW_ERROR'}
+      var msg = {"status": "PW_ERROR"}
       res.json(msg)
       return;
     }
   }
 })
 })
+
+
+
 
 module.exports = router;
 // var options = {

@@ -25,18 +25,18 @@ var searchQuery = connection.query('select * from user where ID = ?',[id],functi
   if(rows.length > 0)
   {
     console.log(rows);
-    var msg = {'status': 'ERROR_ID'}
+    var msg = {"status": "ERROR_ID"}
     res.json(msg)
     return;
   }
   var registerquery = connection.query('insert into user set ?',sql, function(err,rows){
     if(err){
       console.log(err)
-      var msg = {'status': 'ERROR_EMAIL'}
+      var msg = {"status": "ERROR_EMAIL"}
       res.json(msg)
       return;
     }
-    var msg = {'status':'OK'}
+    var msg = {"status":"OK"}
     res.json(msg)
   })
 })

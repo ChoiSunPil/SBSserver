@@ -1,6 +1,5 @@
 var express = require('express')
 var router = express.Router()
-var sleep = require('sleep')
 var mysql = require('mysql')
 var rn = require('random-number');
 var nodemailer = require('nodemailer');

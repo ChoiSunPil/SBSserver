@@ -66,14 +66,16 @@ router.post('/add',function(req,res){
   var searchQuery = connection.query('select * from user where ID = ?',[token.data],function(err,rows){
     if(err)
     {
+      console.log("serch")
       console.log(err)
       res.json({"status":"error"})
     }
     else {
       var location = rows[0].name
-      var insertQuery = connection.query('insert into stamp values (?,?,?,now(),?)',[0,id,location,1],function(err,rows){
+      var insertQuery = connection.query('insert into stamp values (?,?,?,now(),?,0)',[0,id,location,1],function(err,rows){
         if(err)
         {
+          console.log("insert")
           console.log(err)
           res.json({"status":"error"})
         }
@@ -82,6 +84,7 @@ router.post('/add',function(req,res){
           var updateQuery = connection.query('update user SET totalstamp = totalstamp+1 WHERE ID = ?',[id],function(err,rows){
             if(err)
             {
+              console.log("update")
               console.log(err)
               res.json({"status":"error"})
             }

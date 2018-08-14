@@ -34,7 +34,7 @@ router.post('/',function(req, res){
         res.json({"status":"error"})
       }
       else {
-        res.json({"number":rows[0].totalstamp , "statue":"ok"})
+        res.json({"number":rows[0].totalstamp , "status":"ok"})
 
       }
     })
@@ -80,7 +80,7 @@ router.post('/add',function(req,res){
           res.json({"status":"error"})
         }
         else {
-          console.log(rows[0])
+
           var updateQuery = connection.query('update user SET totalstamp = totalstamp+1 WHERE ID = ?',[id],function(err,rows){
             if(err)
             {
@@ -89,7 +89,7 @@ router.post('/add',function(req,res){
               res.json({"status":"error"})
             }
             else{
-          res.json({ "statue":"ok"})
+          res.json({ "status":"ok"})
            }
           })
 

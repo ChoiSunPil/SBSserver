@@ -39,7 +39,8 @@ var searchQuery = connection.query('select * from user where ID = ?',[id],functi
      //var token = tokenHelper.tokenGenerator();
      var name = rows[0].name;
      var type = rows[0].type;
-     var respone = {'status':'ok','token':token,'name':name,'type':type}
+     var email = rows[0].email;
+     var respone = {'status':'ok','token':token,'name':name,'type':type,'email':email}
      res.json(respone);
     return;
     }

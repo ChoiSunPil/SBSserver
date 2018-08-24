@@ -116,7 +116,7 @@ if(res.body.token)
 
     // if token is valid, it will respond with its info
     const respond = (token) => {
-      var user_pw = res.body.password
+      var user_pw = req.body.password
       var user_id = token.data
       var resetQuery = connection.query('update user set pw =? where id =?',[user_pw,user_id],function(err,rows){
       if(err)
@@ -145,8 +145,8 @@ if(res.body.token)
 
 }
 else {
-var user_pw = res.body.password
-var user_id = res.body.id
+var user_pw = req.body.password
+var user_id = req.body.id
 var resetQuery = connection.query('update user set pw =? where id =?',[user_pw,user_id],function(err,rows){
 if(err)
 {
@@ -164,18 +164,18 @@ else {
 router.post('/check_password',function(req,res){
   var token  = req.body.token;
   // create a promise that decodes the token
-    const p = new Promise(
-        (resolve, reject) => {
-            jwt.verify(token,'secret' ,(err, decoded) => {
-                if(err) reject(err)
-                resolve(decoded)
-            })
-        }
-    )
+  const p = new Promise(
+      (resolve, reject) => {
+          jwt.verify(token,'secret' ,(err, decoded) => {
+              if(err) reject(err)
+              resolve(decoded)
+          })
+      }
+  )
 
     // if token is valid, it will respond with its info
     const respond = (token) => {
-      var user_pw = res.body.password
+      var user_pw = req.body.password
       var user_id = token.data
       var findQuery = connection.query('select * from user where id =?',[user_id],function(err,rows){
       if(err)

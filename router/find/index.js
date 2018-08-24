@@ -3,6 +3,7 @@ var router = express.Router()
 var mysql = require('mysql')
 var rn = require('random-number');
 var auth  = require('./auth')
+var jwt = require('jsonwebtoken');
 router.use('/auth',auth)
 var gen = rn.generator({
   min:  100000
@@ -163,6 +164,7 @@ else {
 
 router.post('/check_password',function(req,res){
   var token  = req.body.token;
+
   // create a promise that decodes the token
   const p = new Promise(
       (resolve, reject) => {

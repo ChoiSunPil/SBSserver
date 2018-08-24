@@ -3,6 +3,7 @@ var router = express.Router()
 var mysql = require('mysql')
 var rn = require('random-number');
 var nodemailer = require('nodemailer');
+var jwt = require('jsonwebtoken');
 var count = 0;
 var user_email
 var gen = rn.generator({

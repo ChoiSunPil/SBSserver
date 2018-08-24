@@ -175,8 +175,8 @@ router.post('/check_password',function(req,res){
 
     // if token is valid, it will respond with its info
     const respond = (token) => {
-      var user_pw = res.body.id
-      var user_id = token.data 
+      var user_pw = res.body.password
+      var user_id = token.data
       var findQuery = connection.query('select * from user where id =?',[user_id],function(err,rows){
       if(err)
       {

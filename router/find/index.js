@@ -102,7 +102,7 @@ res.json({"status":"error"});
 })
 //비밀번호 재설정
 router.post('/reset',function(req,res){
-if(res.body.token)
+if(req.body.token)
 {
   var token  = req.body.token;
   // create a promise that decodes the token
@@ -119,7 +119,7 @@ if(res.body.token)
     const respond = (token) => {
       var user_pw = req.body.password
       var user_id = token.data
-      var resetQuery = connection.query('update user set pw =? where id =?',[user_pw,user_id],function(err,rows){
+      var resetQuery = connection.query('update user set password =? where id =?',[user_pw,user_id],function(err,rows){
       if(err)
       {
         console.log(err)
@@ -141,14 +141,11 @@ if(res.body.token)
     // process the promise
     p.then(respond).catch(onError)
 
-
-
-
 }
 else {
 var user_pw = req.body.password
 var user_id = req.body.id
-var resetQuery = connection.query('update user set pw =? where id =?',[user_pw,user_id],function(err,rows){
+var resetQuery = connection.query('update user set password =? where id =?',[user_pw,user_id],function(err,rows){
 if(err)
 {
   console.log(err)
@@ -206,6 +203,41 @@ router.post('/check_password',function(req,res){
     // process the promise
     p.then(respond).catch(onError)
 })
+router.post('/reset_name',function(req,res){
+  var token = req.body.token
+  const p = new Promise(
+      (resolve, reject) => {
+          jwt.verify(token,'secret' ,(err, decoded) => {
+              if(err) reject(err)
+              resolve(decoded)
+          })
+      }
+  )
 
+  // if token is valid, it will respond with its info
+  const respond = (token) => {
+    var user_revise_name = req.body.name
+    var user_id = token.data
+    var resetQuery = connection.query('update user set name =? where id =?',[user_revise_name,user_id],function(err,rows){
+    if(err)
+    {
+      console.log(err)
+      res.json({"status":"error"});
+    }
+    else {
+      res.json({"status":"ok"});
+    }
+
+    })
+  }
+
+  // if it has failed to verify, it will return an error message
+  const onError = (error) => {
+  res.json({"status":"error"})
+  }
+
+  // process the promise
+  p.then(respond).catch(onError)
+})
 
 module.exports = router;

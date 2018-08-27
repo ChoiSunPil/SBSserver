@@ -136,7 +136,7 @@ router.post('/used',function(req,res){
           if(rows[i].remarks < 0)
           {
           var json = new Object();
-          json.location = rows[i].location;
+          json.stampname = rows[i].stampname;
           json.date = rows[i].createDate;
           jsonArray.push(json);
         }

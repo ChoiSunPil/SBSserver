@@ -130,17 +130,16 @@ router.post('/used',function(req,res){
         res.json({"status":"error"})
       }
       else {
-        var count = 0;
         var jsonArray = new Array();
         for(var i = 0 ; i < rows.length ; i++)
         {
+          if(rows[i].remarks < 0)
+          {
           var json = new Object();
           json.location = rows[i].location;
           json.date = rows[i].createDate;
-          json.remarks = rows[i].remarks;
-          count += rows[i].remarks;
-          json.total_num = count;
           jsonArray.push(json);
+        }
         }
 
        res.send(JSON.parse(JSON.stringify(jsonArray)));

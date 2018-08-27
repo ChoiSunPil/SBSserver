@@ -203,6 +203,7 @@ router.post('/check_password',function(req,res){
     // process the promise
     p.then(respond).catch(onError)
 })
+
 router.post('/reset_name',function(req,res){
   var token = req.body.token
   const p = new Promise(

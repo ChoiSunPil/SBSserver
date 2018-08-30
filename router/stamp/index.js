@@ -12,6 +12,14 @@ var connection = mysql.createConnection({
   dateStrings: 'date'
 })
 connection.connect();
+var nodemailer = require('nodemailer');
+let transporter = nodemailer.createTransport({
+    service:'gmail',
+    auth: {
+        user : 'jjigawesome@gmail.com',
+        pass : 'jjigawesome!1234'
+    }
+});
 
 router.post('/',function(req, res){
   var token  = req.body.token;
@@ -137,7 +145,7 @@ router.post('/used',function(req,res){
           {
           var json = new Object();
           json.stampname = rows[i].stampname;
-          json.date = rows[i].createDate;
+          json.createDate = rows[i].createDate;
           jsonArray.push(json);
         }
         }
@@ -251,6 +259,7 @@ router.post('/exchange',function(req,res){
 var couponType = req.body.type
 var couponStamp = req.body.stamp //필요 스탬프 갯수
 var token = req.body.token
+var user_email
 const p = new Promise(
     (resolve, reject) => {
         jwt.verify(token,'secret' ,(err, decoded) => {
@@ -271,6 +280,7 @@ var updateQuery = connection.query('update user SET totalstamp = totalstamp-? WH
     res.json({"status":"error"})
   }
   else {
+    user_email = rows[0].email
     var insertQuery = connection.query('insert into stamp values(0,?,?,now(),?,0)',[token.data,couponType,-couponStamp],function(err,rows){
       if(err)
       {
@@ -279,15 +289,39 @@ var updateQuery = connection.query('update user SET totalstamp = totalstamp-? WH
         res.json({"status":"error"})
       }
       else {
-        res.json({"status":"ok"})
+        //email 보내기
+        var findQuery = connection.query('select from * coupon where type = ?',[couponType],function(err,rows){
+          if(err)
+          {
+            console.log("findErr")
+            console.log(err)
+            res.json({"status":"error"})
+          }
+          else {
+            var mailOption = {
+              from : 'jjigawesome@gmail.com',
+              to : user_email,
+              subject : '찍어썸 쿠폰 발급 안내',
+              text : rows[0].name+"쿠폰이 발급 되었습니다."
+          };
+          transporter.sendMail(mailOption, function(err, info) {
+              if ( err ) {
+                res.json({"status":"error"})
+                  console.error('Send Mail error : ', err);
+              }
+              else {
+                res.json({"status":"ok"})
+                  console.log('Message sent : ', info);
+              }
+        })
+
       }
     })
-
   }
 })
-
 }
-
+})
+}
 // if it has failed to verify, it will return an error message
 const onError = (error) => {
 res.json({"status":"error"})

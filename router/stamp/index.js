@@ -20,7 +20,8 @@ let transporter = nodemailer.createTransport({
         pass : 'jjigawesome!1234'
     }
 });
-
+var request = require('request')
+var cheerio = require('cheerio')
 router.post('/',function(req, res){
   var token  = req.body.token;
   // create a promise that decodes the token
@@ -272,6 +273,7 @@ const p = new Promise(
 // if token is valid, it will respond with its info
 const respond = (token) => {
 console.log(token.data)
+
 var updateQuery = connection.query('update user SET totalstamp = totalstamp-? WHERE ID = ?',[couponStamp,token.data],function(err,rows){
   if(err)
   {
@@ -280,7 +282,7 @@ var updateQuery = connection.query('update user SET totalstamp = totalstamp-? WH
     res.json({"status":"error"})
   }
   else {
-    user_email = rows[0].email
+
     var insertQuery = connection.query('insert into stamp values(0,?,?,now(),?,0)',[token.data,couponType,-couponStamp],function(err,rows){
       if(err)
       {
@@ -290,33 +292,7 @@ var updateQuery = connection.query('update user SET totalstamp = totalstamp-? WH
       }
       else {
         //email 보내기
-        var findQuery = connection.query('select from * coupon where type = ?',[couponType],function(err,rows){
-          if(err)
-          {
-            console.log("findErr")
-            console.log(err)
-            res.json({"status":"error"})
-          }
-          else {
-            var mailOption = {
-              from : 'jjigawesome@gmail.com',
-              to : user_email,
-              subject : '찍어썸 쿠폰 발급 안내',
-              text : rows[0].name+"쿠폰이 발급 되었습니다."
-          };
-          transporter.sendMail(mailOption, function(err, info) {
-              if ( err ) {
-                res.json({"status":"error"})
-                  console.error('Send Mail error : ', err);
-              }
-              else {
-                res.json({"status":"ok"})
-                  console.log('Message sent : ', info);
-              }
-        })
-
-      }
-    })
+       res.json({"status":"ok"})
   }
 })
 }
@@ -333,8 +309,77 @@ p.then(respond).catch(onError)
 
 
 
+router.post('/email',function(req, res){
+
+  var couponType = req.body.type
+  //var couponStamp = req.body.stamp //필요 스탬프 갯수
+  var token = req.body.token
+  var user_email
+
+  const p = new Promise(
+      (resolve, reject) => {
+          jwt.verify(token,'secret' ,(err, decoded) => {
+              if(err) reject(err)
+              resolve(decoded)
+          })
+      }
+  )
+
+  // if token is valid, it will respond with its info
+  const respond = (token) => {
+    var findIdQuery = connection.query('select * from user where =?',[token.data],function(req,res){
+      if(err)
+      {
+        console.log("findErr")
+        console.log(err)
+        res.json({"status":"error"})
+        res.end()
+      }
+      else {
+        user_email = rows[0].email
+      }
+    })
+    var findCouponQuery = connection.query('select from * coupon where type = ?',[couponType],function(err,rows){
+      if(err)
+      {
+        console.log("findErr")
+        console.log(err)
+        res.json({"status":"error"})
+      }
+      else {
+        var mailOption = {
+          from : 'jjigawesome@gmail.com',
+          to : user_email,
+          subject : '찍어썸 쿠폰 발급 안내',
+          text : rows[0].name+"쿠폰이 발급 되었습니다."
+      };
+      transporter.sendMail(mailOption, function(err, info) {
+          if ( err ) {
+            res.json({"status":"error"})
+              console.error('Send Mail error : ', err);
+          }
+          else {
+            res.json({"status":"ok"})
+              console.log('Message sent : ', info);
+          }
+    })
+
+    }
+    })
+    }
+
+  // if it has failed to verify, it will return an error message
+  const onError = (error) => {
+  res.json({"status":"error"})
+  }
+
+  // process the promise
+  p.then(respond).catch(onError)
+
+})
 
 router.post('/info',function(req,res){
+
 var searchQuery = connection.query('select * from coupon',function(err,rows){
 if(err)
 {
@@ -346,4 +391,45 @@ else {
 }
 })
 })
+
+router.post('/couponlist',function(req,res){
+var thema = req.body.thema
+// create a promise that decodes the token
+  const p = new Promise(
+      (resolve, reject) => {
+          jwt.verify(token,'secret' ,(err, decoded) => {
+              if(err) reject(err)
+              resolve(decoded)
+          })
+      }
+  )
+
+  // if token is valid, it will respond with its info
+  const respond = (token) => {
+  var searchQuery = connection.query('select * from coupon where thema = ?',[thema],function(err,rows){
+    if(err)
+    {
+      console.log(err)
+      res.json({"status":"error"})
+    }
+    else {
+      res.send(JSON.parse(JSON.stringify(rows)));
+    }
+  })
+
+  }
+
+  // if it has failed to verify, it will return an error message
+  const onError = (error) => {
+  res.json({"status":"error"})
+  }
+
+  // process the promise
+  p.then(respond).catch(onError)
+
+})
+
+
+
+
 module.exports = router;

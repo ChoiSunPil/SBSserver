@@ -34,7 +34,7 @@ if(err)throw err;
 if(rows.length>0)
 {
   var mailOption = {
-    from : 'roung4119@gmail.com',
+    from : 'jjigawesome@gmail.com',
     to : user_email,
     subject : '찍어썸 아이디 안내',
     text : rows[0].ID

@@ -14,8 +14,8 @@ var gen = rn.generator({
 let transporter = nodemailer.createTransport({
     service:'gmail',
     auth: {
-        user : 'roung4119@gmail.com',
-        pass : 'choi6459'
+        user : 'jjigawesome@gmail.com',
+        pass : 'jjigawesome!1234'
     }
 });
 var connection = mysql.createConnection({
@@ -40,7 +40,7 @@ router.post('/',function(req,res){
  user_email = req.body.email;
 var auth_number =  gen();
 var mailOption = {
-  from : 'roung4119@gmail.com',
+  from : 'jjigawesome@gmail.com',
   to : user_email,
   subject : '찍어썸 인증번호 안내',
   text : auth_number+""

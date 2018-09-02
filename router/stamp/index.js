@@ -327,7 +327,7 @@ router.post('/email',function(req, res){
 
   // if token is valid, it will respond with its info
   const respond = (token) => {
-    var findIdQuery = connection.query('select * from user where =?',[token.data],function(req,res){
+    var findIdQuery = connection.query('select * from user where =?',[token.data],function(err,rows){
       if(err)
       {
         console.log("findErr")

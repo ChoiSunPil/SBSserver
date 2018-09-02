@@ -68,14 +68,16 @@ res.json({"status":"error"});
   auth.rmAuth(user_email);
   return;
 }
-if(rows.length>0 &&(rows[0].email == user_email))
+else if(rows.length>0 &&(rows[0].email == user_email))
 {
 res.json({"status":"ok"});
 //콜백으로 동작
 auth.rmAuth(user_email);
 return;
 }
+else{
 res.json({"status":"error"});
+}
 })
 })
 

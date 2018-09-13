@@ -2,6 +2,7 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var router = require('./router/index')
 var app = express()
+app.use(express.static('public'));
 app.listen(3000, function(){
   console.log("start! SimBongSa server on 3000")
 })

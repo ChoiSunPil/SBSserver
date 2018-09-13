@@ -3,6 +3,15 @@ var mysql = require('mysql')
 var router = express.Router()
 var path = require('path')
 var jwt = require('jsonwebtoken');
+var fs = require('fs');
+
+// function to encode file data to base64 encoded string
+function base64_encode(file) {
+    // read binary data
+    var bitmap = fs.readFileSync(file);
+    // convert binary data to base64 encoded string
+    return new Buffer(bitmap).toString('base64');
+}
 var connection = mysql.createConnection({
   host : 'localhost',
   port : '3306',
@@ -260,6 +269,7 @@ router.post('/exchange',function(req,res){
 var couponType = req.body.type
 var couponStamp = req.body.stamp //필요 스탬프 갯수
 var token = req.body.token
+var counponname
 var user_email
 const p = new Promise(
     (resolve, reject) => {
@@ -273,6 +283,17 @@ const p = new Promise(
 // if token is valid, it will respond with its info
 const respond = (token) => {
 console.log(token.data)
+var findCounpon = connection.query('select * from counpon where  type= ? ',[couponType],function(err,rows){
+if(err){
+  console.log("findCounponErr")
+  console.log(err)
+  res.json({"status":"error"})
+}
+else {
+
+counponname = rows[0].counponname
+}
+})
 
 var updateQuery = connection.query('update user SET totalstamp = totalstamp-? WHERE ID = ?',[couponStamp,token.data],function(err,rows){
   if(err)
@@ -281,9 +302,8 @@ var updateQuery = connection.query('update user SET totalstamp = totalstamp-? WH
     console.log(err)
     res.json({"status":"error"})
   }
-  else {
-
-    var insertQuery = connection.query('insert into stamp values(0,?,?,now(),?,0)',[token.data,couponType,-couponStamp],function(err,rows){
+  else {//else시작
+    var insertQuery = connection.query('insert into stamp values(0,?,?,now(),?,0)',[token.data,couponname,-couponStamp],function(err,rows){
       if(err)
       {
         console.log("insertErr")
@@ -295,7 +315,7 @@ var updateQuery = connection.query('update user SET totalstamp = totalstamp-? WH
        res.json({"status":"ok"})
   }
 })
-}
+} //else끝
 })
 }
 // if it has failed to verify, it will return an error message
@@ -327,10 +347,10 @@ router.post('/email',function(req, res){
 
   // if token is valid, it will respond with its info
   const respond = (token) => {
-    var findIdQuery = connection.query('select * from user where =?',[token.data],function(err,rows){
+    var findIdQuery = connection.query('select * from user where ID = ?',[token.data],function(err,rows){
       if(err)
       {
-        console.log("findErr")
+        console.log("findIDErr")
         console.log(err)
         res.json({"status":"error"})
         res.end()
@@ -339,7 +359,7 @@ router.post('/email',function(req, res){
         user_email = rows[0].email
       }
     })
-    var findCouponQuery = connection.query('select from * coupon where type = ?',[couponType],function(err,rows){
+    var findCouponQuery = connection.query('select * from  coupon where type = ?',[couponType],function(err,rows){
       if(err)
       {
         console.log("findErr")
@@ -429,7 +449,21 @@ var thema = req.body.thema
 
 })
 
+//test
+router.get('/test',function(req, res){
+  var searchQuery = connection.query('select * from coupon where type = ?',[1],function(err,rows){
+    if(err)
+    {
+      console.log(err)
+      res.json({"status":"error"})
+    }
+    else {
+      res.send(JSON.parse(JSON.stringify(rows)));
+    }
+  })
 
+
+})
 
 
 module.exports = router;

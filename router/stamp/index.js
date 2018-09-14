@@ -156,10 +156,10 @@ router.post('/used',function(req,res){
           var json = new Object();
           json.stampname = rows[i].stampname;
           json.createDate = rows[i].createDate;
+          json.remarks = rows[i].remarks;
           jsonArray.push(json);
+         }
         }
-        }
-
        res.send(JSON.parse(JSON.stringify(jsonArray)));
       }
     })
@@ -269,7 +269,7 @@ router.post('/exchange',function(req,res){
 var couponType = req.body.type
 var couponStamp = req.body.stamp //필요 스탬프 갯수
 var token = req.body.token
-var counponname
+var couponname
 var user_email
 const p = new Promise(
     (resolve, reject) => {
@@ -283,15 +283,14 @@ const p = new Promise(
 // if token is valid, it will respond with its info
 const respond = (token) => {
 console.log(token.data)
-var findCounpon = connection.query('select * from counpon where  type= ? ',[couponType],function(err,rows){
+var findCoupon = connection.query('select * from coupon where  type= ? ',[couponType],function(err,rows){
 if(err){
-  console.log("findCounponErr")
+  console.log("findCouponErr")
   console.log(err)
   res.json({"status":"error"})
 }
 else {
-
-counponname = rows[0].counponname
+couponname = rows[0].couponname
 }
 })
 

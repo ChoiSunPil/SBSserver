@@ -236,6 +236,9 @@ router.post('/hold',function(req,res){
 
     // if token is valid, it will respond with its info
     const respond = (token) => {
+
+
+
     var searchQuery = connection.query('select * from stamp where ID = ?',[token.data],function(err,rows){
       if(err)
       {
@@ -247,7 +250,10 @@ router.post('/hold',function(req,res){
         for(var i = 0 ; i < rows.length ; i++)
         {
           if(rows[i].remarks<0 && rows[i].check == 0)
+          {
           couponArray.push(rows[i])
+          }
+
         }
 
        res.send(JSON.parse(JSON.stringify(couponArray)));
@@ -270,6 +276,7 @@ var couponType = req.body.type
 var couponStamp = req.body.stamp //필요 스탬프 갯수
 var token = req.body.token
 var couponname
+var logo
 var user_email
 const p = new Promise(
     (resolve, reject) => {
@@ -291,6 +298,7 @@ if(err){
 }
 else {
 couponname = rows[0].couponname
+logo = rows[0].logo
 }
 })
 
@@ -302,7 +310,7 @@ var updateQuery = connection.query('update user SET totalstamp = totalstamp-? WH
     res.json({"status":"error"})
   }
   else {//else시작
-    var insertQuery = connection.query('insert into stamp values(0,?,?,now(),?,0)',[token.data,couponname,-couponStamp],function(err,rows){
+    var insertQuery = connection.query('insert into stamp values(0,?,?,now(),?,0,?)',[token.data,couponname,-couponStamp,logo],function(err,rows){
       if(err)
       {
         console.log("insertErr")
@@ -370,7 +378,7 @@ router.post('/email',function(req, res){
           from : 'jjigawesome@gmail.com',
           to : user_email,
           subject : '찍어썸 쿠폰 발급 안내',
-          text : rows[0].name+"쿠폰이 발급 되었습니다."
+          text : rows[0].couponname+"쿠폰이 발급 되었습니다."
       };
       transporter.sendMail(mailOption, function(err, info) {
           if ( err ) {

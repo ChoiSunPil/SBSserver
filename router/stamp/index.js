@@ -201,7 +201,7 @@ router.post('/expired',function(req,res){
         for(var i = 0 ; i < rows.length ; i++)
         {
 
-          if(rows[i].remarks<0 && rows[i].check == 0)
+          if(rows[i].remarks<0 && rows[i].checked == 0)
           {
             var d = new Date(Date.parse(rows[i].createDate));
            if(((d.getFullYear()-today.getFullYear())*365+(3+d.getMonth() - today.getMonth())*30+(d.getDay()-today.getDay())) <30)
@@ -249,7 +249,7 @@ router.post('/hold',function(req,res){
        var couponArray = new Array();
         for(var i = 0 ; i < rows.length ; i++)
         {
-          if(rows[i].remarks<0 && rows[i].check == 0)
+          if(rows[i].remarks<0 && rows[i].checked == 0)
           {
           couponArray.push(rows[i])
           }
@@ -384,7 +384,7 @@ router.post('/email',function(req, res){
                   console.error('Send Mail error : ', err);
               }
               else {
-                  var updateQuery = connection.query('update stamp set check = ? where num = ?',[1,num],function(err,rows){
+                  var updateQuery = connection.query('update stamp set checked = ? where num = ?',[1,parseInt(num)],function(err,rows){
                     if(err)
                     {
                       console.log("updateErr")
@@ -398,7 +398,6 @@ router.post('/email',function(req, res){
                       console.log('Message sent : ', info);
                     }
                  })
-
               }
         })
 

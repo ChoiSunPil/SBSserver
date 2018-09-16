@@ -376,7 +376,7 @@ router.post('/email',function(req, res){
               from : 'jjigawesome@gmail.com',
               to : user_email,
               subject : '찍어썸 쿠폰 발급 안내',
-              text : rows[0].couponname+"쿠폰이 발급 되었습니다."
+              text : rows[0].stampname+"쿠폰이 발급 되었습니다."
           };
           transporter.sendMail(mailOption, function(err, info) {
               if ( err ) {
@@ -384,8 +384,21 @@ router.post('/email',function(req, res){
                   console.error('Send Mail error : ', err);
               }
               else {
-                res.json({"status":"ok"})
-                  console.log('Message sent : ', info);
+                  var updateQuery = connection.query('update stamp set check = ? where num = ?',[1,num],function(err,rows){
+                    if(err)
+                    {
+                      console.log("updateErr")
+                      console.log(err)
+                      res.json({"status":"error"})
+                    }
+                    else
+                    {
+
+                    res.json({"status":"ok"})
+                      console.log('Message sent : ', info);
+                    }
+                 })
+
               }
         })
 
@@ -460,21 +473,7 @@ var thema = req.body.thema
 
 })
 
-//test
-router.get('/test',function(req, res){
-  var searchQuery = connection.query('select * from coupon where type = ?',[1],function(err,rows){
-    if(err)
-    {
-      console.log(err)
-      res.json({"status":"error"})
-    }
-    else {
-      res.send(JSON.parse(JSON.stringify(rows)));
-    }
-  })
 
-
-})
 
 
 module.exports = router;

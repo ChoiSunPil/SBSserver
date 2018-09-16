@@ -338,8 +338,7 @@ p.then(respond).catch(onError)
 
 router.post('/email',function(req, res){
 
-  var couponType = req.body.type
-  //var couponStamp = req.body.stamp //필요 스탬프 갯수
+  var num = req.body.num
   var token = req.body.token
   var user_email
 
@@ -364,36 +363,41 @@ router.post('/email',function(req, res){
       }
       else {
         user_email = rows[0].email
-      }
-    })
-    var findCouponQuery = connection.query('select * from  coupon where type = ?',[couponType],function(err,rows){
-      if(err)
-      {
-        console.log("findErr")
-        console.log(err)
-        res.json({"status":"error"})
-      }
-      else {
-        var mailOption = {
-          from : 'jjigawesome@gmail.com',
-          to : user_email,
-          subject : '찍어썸 쿠폰 발급 안내',
-          text : rows[0].couponname+"쿠폰이 발급 되었습니다."
-      };
-      transporter.sendMail(mailOption, function(err, info) {
-          if ( err ) {
+        //
+        var findCouponQuery = connection.query('select * from  stamp where num = ?',[num],function(err,rows){
+          if(err)
+          {
+            console.log("findErr")
+            console.log(err)
             res.json({"status":"error"})
-              console.error('Send Mail error : ', err);
           }
           else {
-            res.json({"status":"ok"})
-              console.log('Message sent : ', info);
-          }
+            var mailOption = {
+              from : 'jjigawesome@gmail.com',
+              to : user_email,
+              subject : '찍어썸 쿠폰 발급 안내',
+              text : rows[0].couponname+"쿠폰이 발급 되었습니다."
+          };
+          transporter.sendMail(mailOption, function(err, info) {
+              if ( err ) {
+                res.json({"status":"error"})
+                  console.error('Send Mail error : ', err);
+              }
+              else {
+                res.json({"status":"ok"})
+                  console.log('Message sent : ', info);
+              }
+        })
+
+        }
+        })
+        }
+
+
+        //
+      }
     })
 
-    }
-    })
-    }
 
   // if it has failed to verify, it will return an error message
   const onError = (error) => {

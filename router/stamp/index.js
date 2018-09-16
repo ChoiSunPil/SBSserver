@@ -390,13 +390,13 @@ router.post('/email',function(req, res){
         })
 
         }
-        })
-        }
 
+        })
 
         //
       }
     })
+  }
 
 
   // if it has failed to verify, it will return an error message

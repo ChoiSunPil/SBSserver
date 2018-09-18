@@ -90,7 +90,7 @@ router.post('/add',function(req,res){
     }
     else {
       var location = rows[0].name
-      var insertQuery = connection.query('insert into stamp values (?,?,?,now(),?,0)',[0,id,location,1],function(err,rows){
+      var insertQuery = connection.query('insert into stamp values (?,?,?,now(),?,0,0)',[0,id,location,1],function(err,rows){
         if(err)
         {
           console.log("insert")

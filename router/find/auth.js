@@ -78,23 +78,12 @@ var mailOption = {
   text : auth_number+""
 };
 
-
-transporter.sendMail(mailOption, function(err, info) {
-  console.log("sendMail");
-  if ( err ) {
-      console.error('Send Mail error : ', err);
-      res.json({"status":"error"})
-  }
-  else {
-      console.log('Message sent : ', info);
-    res.json({"status":"ok"})
-  }
-});
 //해당 이메일 있는지
 var findQurey = connection.query('select * from user where email=?',[user_email],function(err,rows){
     console.log("findQuery");
 if(err){
   console.log(err)
+  return
 }
 else{
 if(rows.length > 0)
@@ -105,12 +94,25 @@ var insertquery = connection.query('insert into find_pw values(?,?,?);',["0",use
 if(err){
 console.log(err);
 res.json({"status":"error"})
+return
 }
 
 //pk = rows;
 console.log("insert")
 console.log(user_email+"  "+auth_number);
 })
+transporter.sendMail(mailOption, function(err, info) {
+  console.log("sendMail");
+  if ( err ) {
+      console.error('Send Mail error : ', err);
+      res.json({"status":"error"})
+      return
+  }
+  else {
+      console.log('Message sent : ', info);
+    res.json({"status":"ok"})
+  }
+});
 res.json({"status":"ok"});
 }
 else {

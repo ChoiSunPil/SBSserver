@@ -4,7 +4,7 @@ var mysql = require('mysql')
 var rn = require('random-number');
 var nodemailer = require('nodemailer');
 var jwt = require('jsonwebtoken');
-var count = 0;
+
 var user_email
 var gen = rn.generator({
   min:  100000
@@ -26,7 +26,7 @@ var connection = mysql.createConnection({
   database : 'seouldb'
 })
 router.rmAuth = function (user_email){
-    var deleQuery = connection.query('delete  from find_pw where email=?',[user_email],function(err,rows){
+    var deleQuery = connection.query('delete from find_pw where email=?',[user_email],function(err,rows){
       if(err){
 		console.log(err);
 	} else {
@@ -34,6 +34,38 @@ router.rmAuth = function (user_email){
 	}
 })
 }
+router.post('/register',function(req,res){
+user_email = req.body.email;
+ var auth_number =  gen();
+ var mailOption = {
+   from : 'jjigawesome@gmail.com',
+   to : user_email,
+   subject : '찍어썸 인증번호 안내',
+   text : auth_number+""
+ };
+ transporter.sendMail(mailOption, function(err, info) {
+   console.log("sendMail");
+   if ( err ) {
+       console.error('Send Mail error : ', err);
+       res.json({"status":"error"})
+   }
+   else {
+       console.log('Message sent : ', info);
+       res.json({"status":"ok"})
+   }
+ });
+ var insertquery = connection.query('insert into find_pw values(?,?,?);',["0",user_email,auth_number],function(err,rows){
+   console.log("insertquery");
+ if(err){
+ console.log(err);
+ res.json({"status":"error"})
+ }
+ //pk = rows;
+ console.log("insert")
+ console.log(user_email+"  "+auth_number);
+ })
+
+})
 //이메일로 인증번호 6자리 보냄
 router.post('/',function(req,res){
 //var user_id = req.query.id;
@@ -45,37 +77,47 @@ var mailOption = {
   subject : '찍어썸 인증번호 안내',
   text : auth_number+""
 };
+
+
 transporter.sendMail(mailOption, function(err, info) {
-  console.log("sendMail"+count++);
+  console.log("sendMail");
   if ( err ) {
       console.error('Send Mail error : ', err);
+      res.json({"status":"error"})
   }
   else {
       console.log('Message sent : ', info);
+    res.json({"status":"ok"})
   }
 });
 //해당 이메일 있는지
-
 var findQurey = connection.query('select * from user where email=?',[user_email],function(err,rows){
-    console.log("findQuery"+count++);
-if(err)throw err;
+    console.log("findQuery");
+if(err){
+  console.log(err)
+}
+else{
 if(rows.length > 0)
 {
 //DB에 추가
 var insertquery = connection.query('insert into find_pw values(?,?,?);',["0",user_email,auth_number],function(err,rows){
-  console.log("insertquery"+count++);
+  console.log("insertquery");
 if(err){
 console.log(err);
+res.json({"status":"error"})
 }
+
 //pk = rows;
 console.log("insert")
-console.log(user_email+"  "+auth_number)
-
+console.log(user_email+"  "+auth_number);
 })
 res.json({"status":"ok"});
 }
 else {
+
   res.json({"status":"error"});
+}
+
 }
 })
 })

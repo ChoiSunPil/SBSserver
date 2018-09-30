@@ -124,19 +124,46 @@ router.post('/reset', function(req, res) {
         const respond = (token) => {
           var user_pw = req.body.password
           var user_id = token.data
-          var resetQuery = connection.query('update user set password =? where ID =?', [user_pw, user_id], function(err, rows) {
-            if (err) {
-              console.log(err)
-              res.json({
-                "status": "error"
-              });
-            } else {
-              res.json({
-                "status": "ok"
-              });
-            }
+          var sql = [user_pw,user_id]
 
-          })
+          query = connection.query('select * from user where ID =?', [user_id], function(err, rows) {
+              if (err) {
+                res.json({
+                  "status": "error"
+                })
+              } else {
+                if (rows.length>0) {
+                  console.log(1)
+                  var query = connection.query('update user set password =?  where ID =? ', sql, function(err, rows) {
+                    if (err) {
+                      console.log(err)
+                      res.json({
+                        "status": "error"
+                      })
+                    } else {
+                      console.log(2)
+                      // if(rows[0] >0)
+                      // {
+                      //console.log(rows[0]);
+                      res.json({
+                        "status": "ok"
+                      })
+                      // }
+                      // else {
+                      //   res.json({"status":"error"})
+                      // }
+                    }
+
+                  })
+                } else {
+                  console.log(3)
+                  res.json({
+                    "status": "error"
+                  })
+                }
+
+              }
+        })
 
         }
 

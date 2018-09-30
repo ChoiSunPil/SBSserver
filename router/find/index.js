@@ -108,7 +108,7 @@ router.post('/check', function(req, res) {
 })
 //비밀번호 재설정
 router.post('/reset', function(req, res) {
-      if (req.body.token > 0) {
+      if (req.body.token) {
         var token = req.body.token;
         // create a promise that decodes the token
         const p = new Promise(
@@ -132,8 +132,11 @@ router.post('/reset', function(req, res) {
                   "status": "error"
                 })
               } else {
+                console.log(1234)
                 if (rows.length>0) {
                   console.log(1)
+
+
                   var query = connection.query('update user set password =?  where ID =? ', sql, function(err, rows) {
                     if (err) {
                       console.log(err)
@@ -155,8 +158,9 @@ router.post('/reset', function(req, res) {
                     }
 
                   })
+
                 } else {
-                  console.log(3)
+                  console.log(124)
                   res.json({
                     "status": "error"
                   })

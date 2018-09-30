@@ -21,7 +21,13 @@ var type = body.type;
 console.log(body);
 var sql = {"name":name,"ID":id,"password":pw,"email":email,"type":type,"totalstamp":0}
 var searchQuery = connection.query('select * from user where ID = ?',[id],function(err,rows){
-  if(err)throw err
+  if(err)
+  {
+    console.log(err);
+    var msg = {"status": "ERROR_ID"}
+    res.json(msg)
+    return;
+  }
   if(rows.length > 0)
   {
     console.log(rows);
@@ -36,7 +42,7 @@ var searchQuery = connection.query('select * from user where ID = ?',[id],functi
       res.json(msg)
       return;
     }
-    var msg = {"status":"OK"}
+    var msg = {"status":"ok"}
     res.json(msg)
   })
 })
